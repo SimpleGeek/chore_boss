@@ -25,7 +25,29 @@ class ChoresState extends State<Chores> {
 
   void _pushDone() {
     Navigator.of(context).push(
-      
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          final Iterable<ListTile> tiles = _done.map(
+              (String chore) {
+                return ListTile(
+                  title: Text(
+                    chore,
+                    style: _biggerFont,
+                  )
+                );
+              }
+          ); // Iterable<ListTile>
+          final List<Widget> divided = ListTile
+            .divideTiles(tiles: tiles, context: context)
+            .toList(); // List<Widget>
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Completed Chores'),
+            ),
+            body: ListView(children: divided),
+          );
+        }, // builder
+      ),
     );
   }
 
@@ -37,7 +59,7 @@ class ChoresState extends State<Chores> {
         style: _biggerFont,
       ),
       trailing: Icon(
-        alreadyDone ? Icons.check_box_outline_blank : Icons.check_box,
+        alreadyDone ? Icons.check_box : Icons.check_box_outline_blank,
       ),
       onTap: () {
         setState(() {
@@ -73,7 +95,7 @@ class ChoresState extends State<Chores> {
         ],
       ),
       body: _buildChores(),
-    ); // Scaffold
+    );
   }
 }
 
