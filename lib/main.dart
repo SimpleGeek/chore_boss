@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -23,6 +25,15 @@ class ChoresState extends State<Chores> {
   final Set<String> _done = Set<String>();
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
+  void _pushAddChore() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => AddChoreForm(),
+      ),
+    ); // Navigator.of(context).push
+  }
+
+  // TODO: Change this method to show task maintenance window
   void _pushDone() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -95,6 +106,11 @@ class ChoresState extends State<Chores> {
         ],
       ),
       body: _buildChores(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _pushAddChore(),
+        tooltip: 'New Chore',
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
@@ -102,4 +118,51 @@ class ChoresState extends State<Chores> {
 class Chores extends StatefulWidget {
   @override
   ChoresState createState() => ChoresState();
+}
+
+class AddChoreForm extends StatefulWidget {
+  @override
+  AddChoreFormState createState() => AddChoreFormState();
+}
+
+class AddChoreFormState extends State<AddChoreForm> {
+  final choreTitleController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up text field controller when done
+    choreTitleController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Add New Chore'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: TextField(
+          controller: choreTitleController,
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        // When the user presses the button, show an alert dialog containing
+        // the text that the user has entered into the text field.
+        onPressed: () {
+          return showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                // Retrieve the text that the user has entered by using the
+                // TextEditingController
+                content: Text(choreTitleController.text),
+              );
+            }, // builder
+          ); // showDialog
+        }, // onPressed
+      ),
+    ); // Scaffold
+  }
 }
