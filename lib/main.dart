@@ -33,35 +33,6 @@ class ChoresState extends State<Chores> {
     ); // Navigator.of(context).push
   }
 
-  // TODO: Change this method to show task maintenance window
-  void _pushDone() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) {
-          final Iterable<ListTile> tiles = _done.map(
-              (String chore) {
-                return ListTile(
-                  title: Text(
-                    chore,
-                    style: _biggerFont,
-                  )
-                );
-              }
-          ); // Iterable<ListTile>
-          final List<Widget> divided = ListTile
-            .divideTiles(tiles: tiles, context: context)
-            .toList(); // List<Widget>
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Completed Chores'),
-            ),
-            body: ListView(children: divided),
-          );
-        }, // builder
-      ),
-    );
-  }
-
   Widget _buildRow(String choreDescr) {
     final bool alreadyDone = _done.contains(choreDescr);
     return ListTile(
@@ -101,9 +72,6 @@ class ChoresState extends State<Chores> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Today\'s Chores'),
-        actions: <Widget>[
-          IconButton(icon: Icon(Icons.list), onPressed: _pushDone),
-        ],
       ),
       body: _buildChores(),
       floatingActionButton: FloatingActionButton(
@@ -126,7 +94,9 @@ class AddChoreForm extends StatefulWidget {
 }
 
 class AddChoreFormState extends State<AddChoreForm> {
+  // Class constants
   final choreTitleController = TextEditingController();
+  final _biggerFont = const TextStyle(fontSize: 18.0);
 
   @override
   void dispose() {
@@ -135,34 +105,41 @@ class AddChoreFormState extends State<AddChoreForm> {
     super.dispose();
   }
 
+  Widget _buildForm() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            'Add New Chore',
+            style: _biggerFont,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: choreTitleController,
+            ),
+          ),
+          RaisedButton(
+            onPressed: () {
+              /*...*/
+            },
+            child: Text(
+              "Add Chore",
+            ),
+          ),
+        ],
+      ),
+    ); // Center
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Add New Chore'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: TextField(
-          controller: choreTitleController,
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        // When the user presses the button, show an alert dialog containing
-        // the text that the user has entered into the text field.
-        onPressed: () {
-          return showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                // Retrieve the text that the user has entered by using the
-                // TextEditingController
-                content: Text(choreTitleController.text),
-              );
-            }, // builder
-          ); // showDialog
-        }, // onPressed
-      ),
+      body: _buildForm(),
     ); // Scaffold
   }
 }
