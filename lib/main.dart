@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 
 void main() {
   runApp(MyApp());
@@ -100,6 +101,18 @@ class AddChoreFormState extends State<AddChoreForm> {
   final choreTitleController = TextEditingController();
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
+  // Method to add new chore to the database
+  void _addChore() async {
+    Database db = await openDatabase('assets/chores.db');
+
+    // Insert the text the user entered as the new chore description
+    await db.transaction((txn) async {
+      await txn.rawInsert(
+        'INSERT INTO chore(name) VALUES(?)',
+        [choreTitleController.text]);
+    });
+  }
+
   @override
   void dispose() {
     // Clean up text field controller when done
@@ -124,7 +137,7 @@ class AddChoreFormState extends State<AddChoreForm> {
           ),
           RaisedButton(
             onPressed: () {
-              /*...*/
+              _addChore();
             },
             child: Text(
               "Add Chore",
@@ -132,7 +145,7 @@ class AddChoreFormState extends State<AddChoreForm> {
           ),
         ],
       ),
-    ); // Center
+    );
   }
 
   @override
@@ -142,6 +155,6 @@ class AddChoreFormState extends State<AddChoreForm> {
         title: Text('Add New Chore'),
       ),
       body: _buildForm(),
-    ); // Scaffold
+    );
   }
 }
